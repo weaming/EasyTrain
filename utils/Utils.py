@@ -1,5 +1,4 @@
 import urllib.parse
-
 from datetime import datetime
 
 from utils.Log import Log
@@ -17,8 +16,8 @@ def check(target, log):
 
 
 def formatDate(date):
-    return datetime.strptime(date, '%Y%m%d').strftime('%Y-%m-%d')
+    return datetime.strptime(date, "%Y%m%d").strftime("%Y-%m-%d")
 
 
-if __name__ == '__main__':
-    print(formatDate('20180102'))
+if __name__ == "__main__":
+    print(formatDate("20180102"))

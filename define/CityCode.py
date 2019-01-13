@@ -5349,7 +5349,7 @@ CITY_CODE = [
     "ZAP",
     "ZNK",
     "ZDC",
-    "ZAF", 
+    "ZAF",
     "KVQ",
 ]
 
@@ -5359,7 +5359,10 @@ def city2code(cityName):
 
 
 def code2city(cityCode):
-    return CITY_NAME[CITY_CODE.index(cityCode)]
+    try:
+        return CITY_NAME[CITY_CODE.index(cityCode)]
+    except ValueError:
+        pass
 
 
 from net import NetUtils

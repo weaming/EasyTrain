@@ -62,20 +62,19 @@ INDEX_START_DATE = 13  # 车票出发日期
 #  start_train_date:车票出发日期：13
 
 
-
 class Query(object):
     @staticmethod
     def query(trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT):
         params = {
-            r'leftTicketDTO.train_date': trainDate,
-            r'leftTicketDTO.from_station': city2code(fromStation),
-            r'leftTicketDTO.to_station': city2code(toStation),
-            r'purpose_codes': passengerType
+            r"leftTicketDTO.train_date": trainDate,
+            r"leftTicketDTO.from_station": city2code(fromStation),
+            r"leftTicketDTO.to_station": city2code(toStation),
+            r"purpose_codes": passengerType,
         }
-        jsonRet = EasyHttp.send(queryUrls['query'], params=params)
+        jsonRet = EasyHttp.send(queryUrls["query"], params=params)
         try:
             if jsonRet:
-                return Query.__decode(jsonRet['data']['result'], passengerType)
+                return Query.__decode(jsonRet["data"]["result"], passengerType)
         except Exception as e:
             Log.e(e)
         return []
@@ -83,7 +82,7 @@ class Query(object):
     @staticmethod
     def __decode(queryResults, passengerType):
         for queryResult in queryResults:
-            info = queryResult.split('|')
+            info = queryResult.split("|")
             ticket = TicketDetails()
             ticket.passengerType = passengerType
             ticket.trainNo = info[INDEX_TRAIN_NO]
@@ -115,57 +114,89 @@ class Query(object):
             yield ticket
 
     @staticmethod
-    def outputPretty(trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT):
+    def outputPretty(
+        trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT
+    ):
         table = PrettyTable()
-        table.field_names = '车次 车站 时间 历时 商务特等座 一等座 二等座 高级软卧 软卧 动卧 硬卧 软座 硬座 无座 其他 备注'.split(sep=' ')
+        table.field_names = "车次 车站 时间 历时 商务特等座 一等座 二等座 高级软卧 软卧 动卧 硬卧 软座 硬座 无座 其他 备注".split(
+            sep=" "
+        )
         for ticket in Query.query(trainDate, fromStation, toStation, passengerType):
             if not ticket:
                 continue
-            table.add_row([ticket.trainNo,
-                           '\n'.join([Fore.GREEN + ticket.fromStation + Fore.RESET,
-                                      Fore.RED + ticket.toStation + Fore.RESET]),
-                           '\n'.join(
-                               [Fore.GREEN + ticket.leaveTime + Fore.RESET,
-                                Fore.RED + ticket.arriveTime + Fore.RESET]),
-                           ticket.totalConsume,
-                           ticket.businessSeat or '--',
-                           ticket.firstClassSeat or '--',
-                           ticket.secondClassSeat or '--',
-                           ticket.advancedSoftSleep or '--',
-                           ticket.softSleep or '--',
-                           ticket.moveSleep or '--',
-                           ticket.hardSleep or '--',
-                           ticket.softSeat or '--',
-                           ticket.hardSeat or '--',
-                           ticket.noSeat or '--',
-                           ticket.other or '--',
-                           ticket.mark or '--']
-                          )
+            table.add_row(
+                [
+                    ticket.trainNo,
+                    "\n".join(
+                        [
+                            Fore.GREEN + ticket.fromStation + Fore.RESET,
+                            Fore.RED + ticket.toStation + Fore.RESET,
+                        ]
+                    ),
+                    "\n".join(
+                        [
+                            Fore.GREEN + ticket.leaveTime + Fore.RESET,
+                            Fore.RED + ticket.arriveTime + Fore.RESET,
+                        ]
+                    ),
+                    ticket.totalConsume,
+                    ticket.businessSeat or "--",
+                    ticket.firstClassSeat or "--",
+                    ticket.secondClassSeat or "--",
+                    ticket.advancedSoftSleep or "--",
+                    ticket.softSleep or "--",
+                    ticket.moveSleep or "--",
+                    ticket.hardSleep or "--",
+                    ticket.softSeat or "--",
+                    ticket.hardSeat or "--",
+                    ticket.noSeat or "--",
+                    ticket.other or "--",
+                    ticket.mark or "--",
+                ]
+            )
         print(table)
 
     @staticmethod
-    def querySpec(trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT, trainsNo=[],
-                  seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE]):
+    def querySpec(
+        trainDate,
+        fromStation,
+        toStation,
+        passengerType=PASSENGER_TYPE_ADULT,
+        trainsNo=[],
+        seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE],
+    ):
         for ticket in Query.query(trainDate, fromStation, toStation, passengerType):
             # filter trainNo
             if not TrainUtils.filterTrain(ticket, trainsNo):
                 continue
+
             # filter seat
-            for seatTypeName, seatTypeProperty in TrainUtils.seatWhich(seatTypes, ticket):
-                if seatTypeProperty and seatTypeProperty != '无':
-                    Log.v('%s: %s' % (seatTypeName, seatTypeProperty))
+            for seatTypeName, seatTypeProperty in TrainUtils.seatWhich(
+                seatTypes, ticket
+            ):
+                if seatTypeProperty and seatTypeProperty != "无":
+                    Log.v("%s: %s" % (seatTypeName, seatTypeProperty))
                     ticket.seatType = SEAT_TYPE[seatTypeName]
                     yield ticket
         return []
 
     @staticmethod
-    def loopQuery(trainDate, fromStation, toStation, passengerType=PASSENGER_TYPE_ADULT, trainsNo=[],
-                  seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE], timeInterval=QUERY_TICKET_REFERSH_INTERVAL):
+    def loopQuery(
+        trainDate,
+        fromStation,
+        toStation,
+        passengerType=PASSENGER_TYPE_ADULT,
+        trainsNo=[],
+        seatTypes=[SEAT_TYPE[key] for key in SEAT_TYPE],
+        timeInterval=QUERY_TICKET_REFERSH_INTERVAL,
+    ):
         count = 0
         while True:
             count += 1
-            Log.v('正在为您刷票: %d 次' % count)
-            for ticketDetails in Query.querySpec(trainDate, fromStation, toStation, passengerType, trainsNo, seatTypes):
+            Log.v("正在为您刷票: %d 次" % count)
+            for ticketDetails in Query.querySpec(
+                trainDate, fromStation, toStation, passengerType, trainsNo, seatTypes
+            ):
                 if ticketDetails:
                     return ticketDetails
             time.sleep(timeInterval)
@@ -174,5 +205,4 @@ class Query(object):
 if __name__ == "__main__":
     # for ticket in Query.query('2017-12-31', '深圳北', '潮汕'):
     #     print(ticket)
-    Query.outputPretty('2018-02-27', '潮汕', '深圳北')
-
+    Query.outputPretty("2018-02-27", "潮汕", "深圳北")

@@ -168,18 +168,23 @@ class PassengerDetails(object):
         self._indexId = value
 
     def __str__(self):
-        return '[name: %s,' \
-               'sex: %s' \
-               'birth: %s' \
-               'id: %s' \
-               'phone: %s' \
-               'email: %s' \
-               'passengerType: %s]' % (self._passengerName or '',
-                                       self._sexName or '',
-                                       self._bornDate or '',
-                                       self._passengerIdNo or '',
-                                       self._mobileNo or '',
-                                       self._email or '',
-                                       self._passengerType or '')
+        return (
+            "[name: %s,"
+            "sex: %s"
+            "birth: %s"
+            "id: %s"
+            "phone: %s"
+            "email: %s"
+            "passengerType: %s]"
+            % (
+                self._passengerName or "",
+                self._sexName or "",
+                self._bornDate or "",
+                self._passengerIdNo or "",
+                self._mobileNo or "",
+                self._email or "",
+                self._passengerType or "",
+            )
+        )
 
     __repr__ = __str__

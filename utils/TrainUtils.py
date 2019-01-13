@@ -137,8 +137,9 @@ def submitTicketTotalCost(jsonTicketInfo, orderDBListIndex=0):
 def filterTrain(ticketDetails, trainsNo=[]):
     if not trainsNo:
         return True
-    for trainNo in trainsNo:
-        if trainNo == ticketDetails.trainNo:
+    for trainNo in trainsNo: # trainNo or prefix
+        # if trainNo == ticketDetails.trainNo:
+        if ticketDetails.trainNo.startswith(trainNo):
             return True
     return False
 

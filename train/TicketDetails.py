@@ -43,7 +43,7 @@ class TicketDetails(object):
     #  start_station_code:起始站：4
     @property
     def startStationCode(self):
-        return self._startStationCode;
+        return self._startStationCode
 
     @startStationCode.setter
     def startStationCode(self, value):
@@ -239,7 +239,12 @@ class TicketDetails(object):
         self._startDate = value
 
     def __str__(self):
-        return '[车次:%s,出发站:%s,到达站:%s,出发时间:%s,到达时间:%s]' % (self._trainNo, self._fromStation,
-                                                          self._toStation, self._leaveTime, self._arriveTime)
+        return "[车次:%s,出发站:%s,到达站:%s,出发时间:%s,到达时间:%s]" % (
+            self._trainNo,
+            self._fromStation,
+            self._toStation,
+            self._leaveTime,
+            self._arriveTime,
+        )
 
     __repr__ = __str__

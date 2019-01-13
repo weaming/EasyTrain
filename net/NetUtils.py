@@ -27,11 +27,13 @@ class EasyHttp(object):
     @staticmethod
     def resetHeaders():
         EasyHttp.__session.headers.clear()
-        EasyHttp.__session.headers.update({
-            'Host': r'kyfw.12306.cn',
-            'Referer': 'https://kyfw.12306.cn/otn/login/init',
-            'User-Agent': FIREFOX_USER_AGENT,
-        })
+        EasyHttp.__session.headers.update(
+            {
+                "Host": r"kyfw.12306.cn",
+                "Referer": "https://kyfw.12306.cn/otn/login/init",
+                "User-Agent": FIREFOX_USER_AGENT,
+            }
+        )
 
     @staticmethod
     def setCookies(**kwargs):
@@ -40,27 +42,31 @@ class EasyHttp(object):
 
     @staticmethod
     def removeCookies(key=None):
-        EasyHttp.__session.cookies.set(key, None) if key else EasyHttp.__session.cookies.clear()
+        EasyHttp.__session.cookies.set(
+            key, None
+        ) if key else EasyHttp.__session.cookies.clear()
 
     @staticmethod
     @sendLogic
     def send(urlInfo, params=None, data=None, **kwargs):
         EasyHttp.resetHeaders()
-        if 'headers' in urlInfo and urlInfo['headers']:
-            EasyHttp.updateHeaders(urlInfo['headers'])
+        if "headers" in urlInfo and urlInfo["headers"]:
+            EasyHttp.updateHeaders(urlInfo["headers"])
         try:
-            response = EasyHttp.__session.request(method=urlInfo['method'],
-                                                  url=urlInfo['url'],
-                                                  params=params,
-                                                  data=data,
-                                                  timeout=10,
-                                                  allow_redirects=False,
-                                                  **kwargs)
+            response = EasyHttp.__session.request(
+                method=urlInfo["method"],
+                url=urlInfo["url"],
+                params=params,
+                data=data,
+                timeout=10,
+                allow_redirects=False,
+                **kwargs
+            )
             if response.status_code == requests.codes.ok:
-                if 'response' in urlInfo:
-                    if urlInfo['response'] == 'binary':
+                if "response" in urlInfo:
+                    if urlInfo["response"] == "binary":
                         return response.content
-                    if urlInfo['response'] == 'html':
+                    if urlInfo["response"] == "html":
                         response.encoding = response.apparent_encoding
                         return response.text
                 return response.json()
@@ -69,5 +75,5 @@ class EasyHttp(object):
         return None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
