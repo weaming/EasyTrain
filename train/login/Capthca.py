@@ -80,13 +80,13 @@ class Captcha(object):
             | 4 | 5 | 6 | 7 |
             ----------------- """
         )
-        results = input("输入验证码索引(见上图，以','分割）: ")
+        results = input("输入验证码索引(见上图，以''分割）: ")
         img.close()
         results = self.__indexTransCaptchaResults(results)
         Log.v("captchaResult: %s" % results)
         return results, self.check(results, type)
 
-    def __indexTransCaptchaResults(self, indexes, sep=r","):
+    def __indexTransCaptchaResults(self, indexes, sep=r""):
         coordinates = [
             "40,40",
             "110,40",
@@ -98,7 +98,7 @@ class Captcha(object):
             "250,110",
         ]
         results = []
-        for index in indexes.split(sep=sep):
+        for index in indexes.split(sep=sep) if sep else list(indexes):
             results.append(coordinates[int(index)])
         return ",".join(results)
 
