@@ -1,0 +1,5 @@
+colorama==0.4.1
+Pillow==5.4.1
+prettytable==0.7.2
+requests==2.20.1
+simple-colors==0.1.0
